@@ -11,8 +11,28 @@
         canOpen = [],
         firstOpened;
 
-    function random ( min, max ) {
+    function random( min, max ) {
       return ( min + ( Math.random() * ( max - min ) ) );
+    };
+
+    function changeBackground( id, color ) {
+      document.getElementById( id ).style.background = color;
+    };
+
+    function changeBorder( id, color ) {
+      document.getElementById( id ).style.border = '10px solid '+color;
+    };
+
+    function removeBorder( id ) {
+      document.getElementById( id ).style.borderWidth = '0px';
+    };
+
+    function addClass( id, class_ ) {
+      document.getElementById( id ).classList.add( class_ );
+    };
+
+    function removeClass( id, class_ ) {
+      document.getElementById( id ).classList.remove( class_ );
     };
 
     function generateDoors () {
@@ -22,35 +42,44 @@
     }
 
     function chooseDoor( id ) {
-      document.getElementById( id ).style.background = '#00A9C5';
+      changeBorder( id, '#00A9C5' );
       if( secondChosenDoor ){
-        document.getElementById( firstChosenDoor ).style.background = '#70401C';
+        removeBorder( firstChosenDoor, '#00A9C5' );
       }
     }
 
     function openFirstDoor(){
       canOpen = [];
-      for ( i = 0; i < doors.length; i++ ) {
-        if(doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
-          canOpen.push(i);
-        }
-      }
-      firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
-      document.getElementById( firstOpened ).style.background = '#875E5E';
 
-    }
+      addClass('bar', 'active-bar');
+
+      setTimeout(function () {
+
+        for ( i = 0; i < doors.length; i++ ) {
+          if(doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
+            canOpen.push(i);
+          }
+        }
+        firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
+        changeBackground( firstOpened , '#875E5E' );
+
+        removeClass('bar', 'active-bar');
+
+      }, 1000);
+
+    };
 
     function openDoors(){
       for ( i = 0; i < doors.length; i++ ) {
 
         if( doors[ i ] === 'car' && choice === 'door-' + i ){
-          document.getElementById( 'door-' + i ).style.background = '#08B400';
+          changeBackground( 'door-' + i , '#08B400' );
         } else if( doors[ i ] === 'car' ) {
-          document.getElementById( 'door-' + i ).style.background = '#00570F';
+          changeBackground( 'door-' + i , '#00570F' );
         } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
-          document.getElementById( 'door-' + i ).style.background = '#DA0000';
+          changeBackground( 'door-' + i , '#DA0000' );
         } else {
-          document.getElementById( 'door-' + i ).style.background = '#875E5E';
+          changeBackground( 'door-' + i , '#875E5E' );
         }
 
       };
@@ -60,14 +89,17 @@
       firstChosenDoor = null;
       secondChosenDoor = null;
       choice = null;
+      firstOpened = null;
       doors = generateDoors();
       //close all doors
       for ( i = 0; i < doors.length; i++ ) {
-        document.getElementById( 'door-' + i ).style.background = '#70401C';
+        changeBackground( 'door-' + i , '#70401C' );
+        removeBorder( 'door-' + i );
       }
     }
 
     document.getElementById( 'stage' ).onclick = function( event ) {
+      console.log(( /door-[0-9]/g.test( firstOpened ) ));
 
       if( !( /door-[0-9]/g.test( event.toElement.id ) ) ){
         return false;
@@ -77,7 +109,8 @@
         firstChosenDoor = event.toElement.id;
         chooseDoor( firstChosenDoor );
         openFirstDoor();
-      } else if ( !secondChosenDoor && event.toElement.id !== firstOpened ){
+      } else if ( !secondChosenDoor && event.toElement.id !== firstOpened && ( /door-[0-9]/g.test( firstOpened ) ) ){
+        console.log(firstOpened);
         secondChosenDoor = event.toElement.id;
         chooseDoor( secondChosenDoor );
       }
