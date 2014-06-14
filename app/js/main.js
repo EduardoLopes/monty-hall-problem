@@ -7,7 +7,9 @@
         secondChosenDoor,
         i,
         doors,
-        choice;
+        choice,
+        canOpen = [],
+        firstOpened;
 
     function random ( min, max ) {
       return ( min + ( Math.random() * ( max - min ) ) );
@@ -27,6 +29,14 @@
     }
 
     function openFirstDoor(){
+      canOpen = [];
+      for ( i = 0; i < doors.length; i++ ) {
+        if(doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
+          canOpen.push(i);
+        }
+      }
+      firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
+      document.getElementById( firstOpened ).style.background = '#875E5E';
 
     }
 
@@ -66,7 +76,8 @@
       if( !firstChosenDoor ){
         firstChosenDoor = event.toElement.id;
         chooseDoor( firstChosenDoor );
-      } else if ( !secondChosenDoor ){
+        openFirstDoor();
+      } else if ( !secondChosenDoor && event.toElement.id !== firstOpened ){
         secondChosenDoor = event.toElement.id;
         chooseDoor( secondChosenDoor );
       }
