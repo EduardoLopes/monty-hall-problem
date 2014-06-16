@@ -29,22 +29,30 @@
                     <div id="bar" class="bar"></div>
                 </div>
                 <div class="col-xs-4 col-md-4">
-                    <div id="door-0" class="door door-0"> door - 1</div>
+                    <div id="door-0" class="door door-0"> 1 </div>
                 </div>
                 <div class="col-xs-4 col-md-4">
-                    <div id="door-1" class="door door-1"> door - 2</div>
+                    <div id="door-1" class="door door-1"> 2 </div>
                 </div>
                 <div class="col-xs-4 col-md-4">
-                    <div id="door-2" class="door door-2"> door - 3</div>
+                    <div id="door-2" class="door door-2"> 3 </div>
                 </div>
             </div>
-            <button id="new">New</button>
-            <button id="open">Open doors</button>
+            <div class="row">
+                <div class="col-md-8">
+                    <ul id="log" class="log col-md-12">
+
+                    </ul>
+                </div>
+                <div class="col-md-4 menu">
+                    <button id="open">Open doors</button>
+                    <button id="new">New</button>
+                </div>
+            </div>
         </div>
 
-        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <!-- build:js js/main.js -->
+        <script src="js/vendor/classList.min.js"></script>
         <script src="js/main.js"></script>
         <!-- endbuild -->
 
