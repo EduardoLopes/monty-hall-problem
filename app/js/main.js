@@ -14,45 +14,45 @@
 
     function random( min, max ) {
       return ( min + ( Math.random() * ( max - min ) ) );
-    };
+    }
 
     function changeBackground( id, color ) {
       document.getElementById( id ).style.background = color;
-    };
+    }
 
     function changeBorder( id, color ) {
       document.getElementById( id ).style.border = '10px solid '+color;
-    };
+    }
 
     function removeBorder( id ) {
       document.getElementById( id ).style.borderWidth = '0px';
-    };
+    }
 
     function addClass( id, class_ ) {
       document.getElementById( id ).classList.add( class_ );
-    };
+    }
 
     function removeClass( id, class_ ) {
       document.getElementById( id ).classList.remove( class_ );
-    };
+    }
 
     function changeText(element, text){
       document.getElementById(element).innerHTML = '';
       document.getElementById(element).appendChild( document.createTextNode( text ) );
-    };
+    }
 
     function generateDoors () {
       return [ 'car', 'zonk', 'zonk' ].sort(function() {
         return Math.round( random(-1, 2) );
       });
-    };
+    }
 
     function chooseDoor( id ) {
       changeBorder( id, '#00A9C5' );
       if( secondChosenDoor ){
         removeBorder( firstChosenDoor, '#00A9C5' );
       }
-    };
+    }
 
     function openFirstDoor(){
       canOpen = [];
@@ -73,7 +73,7 @@
 
       }, 1000);
 
-    };
+    }
 
     function openDoors(){
       for ( i = 0; i < doors.length; i++ ) {
@@ -81,7 +81,7 @@
         if( doors[ i ] === 'car' && choice === 'door-' + i ){
           changeBackground( 'door-' + i , '#08B400' );
           changeText('door-' + i, 'car');
-          addLogMessage('You win! Door number '+ (i + 1) +' have a car');
+          addLogMessage('You won! Door number '+ (i + 1) +' have a car');
         } else if( doors[ i ] === 'car' ) {
           changeBackground( 'door-' + i , '#00570F' );
           changeText('door-' + i, 'car');
@@ -94,10 +94,10 @@
           changeText('door-' + i, 'zork');
         }
 
-      };
+      }
 
       allDoorsOpen = true;
-    };
+    }
 
     function clear () {
       firstChosenDoor = null;
@@ -112,13 +112,13 @@
         removeBorder( 'door-' + i );
         changeText('door-' + i, (i + 1));
       }
-    };
+    }
 
     document.getElementById( 'stage' ).onclick = function( event ) {
 
       if( !( /door-[0-9]/g.test( event.toElement.id ) ) ){
         return false;
-      };
+      }
 
       if( !firstChosenDoor ){
         firstChosenDoor = event.toElement.id;
@@ -153,22 +153,22 @@
       openDoors();
     };
 
-    var logContainer = document.getElementById("log");
+    var logContainer = document.getElementById('log');
     function addLogMessage(message){
-      var newLi = document.createElement("li"),
+      var newLi = document.createElement('li'),
           text = document.createTextNode(message);
 
       newLi.classList.add('message-log');
 
       newLi.appendChild(text);
       logContainer.appendChild(newLi);
-    };
+    }
 
     function removeLogMessages(){
       while (logContainer.lastChild) {
         logContainer.removeChild(logContainer.lastChild);
       }
-    };
+    }
 
     return{
       init: function() {

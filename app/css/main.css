@@ -97,12 +97,16 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+html{
+    overflow-y: scroll;
+}
+
 body{
     background: #ececec;
 }
 
 .container{
-    margin-top: 60px;
+
 }
 
 .door{
@@ -135,11 +139,32 @@ body{
 }
 
 .log{
-
+    list-style: none;
+    padding: 0;
 }
 
 .message-log{
+    padding: 10px;
+    background: #FFEDA1;
+    border-bottom: 1px solid #FFE000;
+}
 
+.menu button{
+    padding: 10px;
+    margin-top: 15px;
+}
+
+@media (max-width:768px) {
+    [class*="col-"] {
+      padding: 0;
+    }
+
+    .door{
+        font-size: 2.5em;
+        border: 1px solid #000;
+        height: 200px;
+        line-height: 200px;
+    }
 }
 
 /* ==========================================================================
