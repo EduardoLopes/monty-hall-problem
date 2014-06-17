@@ -1,190 +1,188 @@
 (function() {
   'use strict';
 
-  var Monty = (function() {
+  function random( min, max ) {
+    return ( min + ( Math.random() * ( max - min ) ) );
+  }
 
-    var firstChosenDoor,
-        secondChosenDoor,
-        i,
-        doors,
-        choice,
-        canOpen = [],
-        firstOpened,
-        allDoorsOpen = false;
+  function addClass( id, class_ ) {
+    document.getElementById( id ).classList.add( class_ );
+  }
 
-    function random( min, max ) {
-      return ( min + ( Math.random() * ( max - min ) ) );
-    }
+  function removeClass( id, class_ ) {
+    document.getElementById( id ).classList.remove( class_ );
+  }
 
-    function changeBackground( id, color ) {
-      document.getElementById( id ).style.background = color;
-    }
+  function toggleClass( id, class_ ) {
+    document.getElementById( id ).classList.toggle( class_ );
+  }
 
-    function changeBorder( id, color ) {
-      document.getElementById( id ).style.border = '10px solid '+color;
-    }
+  function changeText(element, text){
+    document.getElementById(element).innerHTML = '';
+    document.getElementById(element).appendChild( document.createTextNode( text ) );
+  }
 
-    function removeBorder( id ) {
-      document.getElementById( id ).style.borderWidth = '0px';
-    }
-
-    function addClass( id, class_ ) {
-      document.getElementById( id ).classList.add( class_ );
-    }
-
-    function removeClass( id, class_ ) {
-      document.getElementById( id ).classList.remove( class_ );
-    }
-
-    function toggleClass( id, class_ ) {
-      document.getElementById( id ).classList.toggle( class_ );
-    }
-
-    function changeText(element, text){
-      document.getElementById(element).innerHTML = '';
-      document.getElementById(element).appendChild( document.createTextNode( text ) );
-    }
-
-    function generateDoors () {
-      return [ 'car', 'zonk', 'zonk' ].sort(function() {
-        return Math.round( random(-1, 2) );
-      });
-    }
-
-    function chooseDoor( id ) {
-      addClass(id, 'door-chosen');
-      if( secondChosenDoor ){
-        removeClass( firstChosenDoor, 'door-chosen');
-      }
-    }
-
-    function openFirstDoor(){
-      canOpen = [];
-
-      addClass('bar', 'active-bar');
-      for ( i = 0; i < doors.length; i++ ) {
-        if(doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
-          canOpen.push(i);
+  var firstChosenDoor,
+      secondChosenDoor,
+      doors = generateDoors(),
+      choice,
+      firstOpened,
+      allDoorsOpen = false,
+      logContainer = document.getElementById('log'),
+      logMessages = {
+        win: function() {
+          return 'You won! Door number '+ extractDoorNumber( choice ) +' have a car!';
+        },
+        lose: function(doorWithCar) {
+          return 'You lose! Door number '+ doorWithCar +' have a car and you choose door number ' + extractDoorNumber(choice);
+        },
+        firstOpenedDoor: function() {
+          return 'Door number ' + extractDoorNumber( firstOpened ) + ' have a zonk!';
+        },
+        chooseFirstDoor: function() {
+          return 'You choose the door number '+ extractDoorNumber( firstChosenDoor );
+        },
+        chooseSecondDoor: function() {
+          return  'You choose change your door ( '+ extractDoorNumber( firstChosenDoor ) +' ) to the door number '+ extractDoorNumber( secondChosenDoor );
+        },
+        allDoorsOpen: function() {
+          return 'All doors open!'
         }
-      }
+      };
 
-      setTimeout(function () {
-        firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
-        addClass(firstOpened, 'door-zonk');
-        addLogMessage('Door number ' + (+firstOpened.match(/[0-9]/g) + 1) + ' have a zonk!');
-        changeText(firstOpened, 'zonk');
-        removeClass('bar', 'active-bar');
-
-      }, 1000);
-
+  function extractDoorNumber(door){
+    if(door){
+      return (+door.match(/[0-9]/g) + 1);
     }
+  }
 
-    function openDoors(){
-      for ( i = 0; i < doors.length; i++ ) {
+  function generateDoors () {
+    return [ 'car', 'zonk', 'zonk' ].sort(function() {
+      return Math.round( random(-1, 2) );
+    });
+  }
 
-        if( doors[ i ] === 'car' && choice === 'door-' + i ){
-          addClass( 'door-' + i , 'door-car' );
-          changeText('door-' + i, 'car');
-          addLogMessage('You won! Door number '+ (i + 1) +' have a car');
-        } else if( doors[ i ] === 'car' ) {
-          addClass( 'door-' + i , 'door-car-was' );
-          changeText('door-' + i, 'car');
-          addLogMessage('You lose! Door number '+ (i + 1) +' have a car and you choose door number ' + (+choice.match(/[0-9]/g) + 1));
-        } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
-          addClass( 'door-'+i, 'door-wrong')
-          changeText('door-' + i, 'zonk');
-        } else {
-          addClass( 'door-' + i , 'door-zonk');
-          changeText('door-' + i, 'zonk');
-        }
-
-      }
-
-      allDoorsOpen = true;
+  function chooseDoor( id ) {
+    addClass(id, 'door-chosen');
+    if( secondChosenDoor ){
+      removeClass( firstChosenDoor, 'door-chosen');
     }
+  }
 
-    function clear () {
-      firstChosenDoor = null;
-      secondChosenDoor = null;
-      choice = null;
-      firstOpened = null;
-      allDoorsOpen = false;
-      doors = generateDoors();
-      //close all doors
-      for ( i = 0; i < doors.length; i++ ) {
-        removeClass( 'door-' + i, 'door-chosen');
-        removeClass( 'door-' + i, 'door-zonk');
-        removeClass( 'door-' + i, 'door-car');
-        removeClass( 'door-' + i, 'door-wrong');
-        removeClass( 'door-' + i, 'door-car-was');
-        changeText('door-' + i, (i + 1));
+  function openFirstDoor(){
+    var canOpen = [], i;
+
+    addClass('bar', 'active-bar');
+    for ( i = 0; i < doors.length; i++ ) {
+      if(doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
+        canOpen.push(i);
       }
     }
 
-    document.getElementById( 'stage' ).onclick = function( event ) {
+    setTimeout(function () {
+      firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
+      addClass(firstOpened, 'door-zonk');
+      addLogMessage(logMessages.firstOpenedDoor());
+      changeText(firstOpened, 'zonk');
+      removeClass('bar', 'active-bar');
+    }, 1000);
 
-      if( !( /door-[0-9]/g.test( event.toElement.id ) ) ){
-        return false;
-      }
+  }
 
-      if( !firstChosenDoor ){
-        firstChosenDoor = event.toElement.id;
-        chooseDoor( firstChosenDoor );
-        addLogMessage('You choose the door number '+ (+firstChosenDoor.match(/[0-9]/g) + 1));
-        openFirstDoor();
-        choice = event.toElement.id;
-      } else if ( !secondChosenDoor && event.toElement.id !== firstChosenDoor && event.toElement.id !== firstOpened && ( /door-[0-9]/g.test( firstOpened ) ) && !allDoorsOpen){
-        secondChosenDoor = event.toElement.id;
-        addLogMessage('You choose change your door ( '+(+firstChosenDoor.match(/[0-9]/g) + 1)+' ) to the door number '+ (+secondChosenDoor.match(/[0-9]/g) + 1));
-        chooseDoor( secondChosenDoor );
-        choice = event.toElement.id;
-      }
-
-      // if(firstChosenDoor && secondChosenDoor){
-      //   openDoors();
-      // }
-
-    };
-
-    document.getElementById( 'new' ).onclick = function(){
-      removeLogMessages();
-      clear();
-    };
-
-    document.getElementById( 'open' ).onclick = function(){
-      if ( !choice || !firstOpened || allDoorsOpen ){
-        return false;
-      }
-
-      addLogMessage('Doors are opened');
-      openDoors();
-    };
-
-    var logContainer = document.getElementById('log');
-    function addLogMessage(message){
-      var newLi = document.createElement('li'),
-          text = document.createTextNode(message);
-
-      newLi.classList.add('message-log');
-
-      newLi.appendChild(text);
-      logContainer.appendChild(newLi);
+  function openDoors(){
+    var i;
+    if ( !choice || !firstOpened || allDoorsOpen ){
+      return false;
     }
 
-    function removeLogMessages(){
-      while (logContainer.lastChild) {
-        logContainer.removeChild(logContainer.lastChild);
+    addLogMessage( logMessages.allDoorsOpen() );
+
+    for ( i = 0; i < doors.length; i++ ) {
+      if( doors[ i ] === 'car' && choice === 'door-' + i ){
+        addClass( 'door-' + i , 'door-car' );
+        changeText('door-' + i, 'car');
+        addLogMessage( logMessages.win() );
+      } else if( doors[ i ] === 'car' ) {
+        addClass( 'door-' + i , 'door-car-was' );
+        changeText('door-' + i, 'car');
+        addLogMessage( logMessages.lose( i + 1 ) );
+      } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
+        addClass( 'door-'+i, 'door-wrong')
+        changeText('door-' + i, 'zonk');
+      } else {
+        addClass( 'door-' + i , 'door-zonk');
+        changeText('door-' + i, 'zonk');
       }
     }
 
-    return{
-      init: function() {
-        doors = generateDoors();
-      }
-    };
+    allDoorsOpen = true;
+  }
 
-  }());
+  function setFirstChosenDoor(door){
+    firstChosenDoor = door;
+    chooseDoor( firstChosenDoor );
+    addLogMessage( logMessages.chooseFirstDoor() );
+    openFirstDoor();
+    choice = door;
+  }
 
-  Monty.init();
+  function setSecondChosenDoor(door){
+    secondChosenDoor = door;
+    addLogMessage( logMessages.chooseSecondDoor() );
+    chooseDoor( secondChosenDoor );
+    choice = door;
+  }
+
+  function addLogMessage(message){
+    var newLi = document.createElement('li'),
+        text = document.createTextNode(message);
+
+    newLi.classList.add('message-log');
+
+    newLi.appendChild(text);
+    logContainer.appendChild(newLi);
+  }
+
+  function removeLogMessages(){
+    while (logContainer.lastChild) {
+      logContainer.removeChild(logContainer.lastChild);
+    }
+  }
+
+  document.getElementById( 'stage' ).onclick = function choose( event ) {
+
+    if( !( /door-[0-9]/g.test( event.toElement.id ) ) ){
+      return false;
+    }
+
+    if( !firstChosenDoor ){
+      setFirstChosenDoor( event.toElement.id );
+    } else if ( !secondChosenDoor && event.toElement.id !== firstChosenDoor && event.toElement.id !== firstOpened && ( /door-[0-9]/g.test( firstOpened ) ) && !allDoorsOpen){
+      setSecondChosenDoor( event.toElement.id )
+    }
+
+  };
+
+  document.getElementById( 'new' ).onclick = function () {
+    var i;
+    firstChosenDoor = null;
+    secondChosenDoor = null;
+    choice = null;
+    firstOpened = null;
+    allDoorsOpen = false;
+    doors = generateDoors();
+    removeLogMessages();
+    //close all doors
+    for ( i = 0; i < doors.length; i++ ) {
+      removeClass( 'door-' + i, 'door-chosen');
+      removeClass( 'door-' + i, 'door-zonk');
+      removeClass( 'door-' + i, 'door-car');
+      removeClass( 'door-' + i, 'door-wrong');
+      removeClass( 'door-' + i, 'door-car-was');
+      changeText('door-' + i, (i + 1));
+    }
+  }
+
+  document.getElementById( 'open' ).onclick = openDoors;
 
 }());
