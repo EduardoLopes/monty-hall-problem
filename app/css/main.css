@@ -116,9 +116,30 @@ body{
     text-align: center;
     line-height: 400px;
     font-size: 6em;
+    border-width: 0px;
     -webkit-transition: all 0.15s;
     -o-transition: all 0.15s;
     transition: all 0.15s;
+}
+
+.door-chosen{
+    border: 5px solid #00A9C5;
+}
+
+.door-zonk{
+    background: #875E5E;
+}
+
+.door-car{
+    background: #08B400;
+}
+
+.door-wrong{
+    background: #DA0000;
+}
+
+.door-car-was{
+    background: #00570F;
 }
 
 .percentage{
@@ -154,16 +175,22 @@ body{
     margin-top: 15px;
 }
 
+@media (max-width: 992px){
+    .menu{
+        text-align: center;
+    }
+}
+
 @media (max-width:768px) {
     [class*="col-"] {
-      padding: 0;
+        padding: 0;
     }
 
     .door{
         font-size: 2.5em;
-        border: 1px solid #000;
         height: 200px;
         line-height: 200px;
+        margin: 1px;
     }
 }
 

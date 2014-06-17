@@ -36,6 +36,10 @@
       document.getElementById( id ).classList.remove( class_ );
     }
 
+    function toggleClass( id, class_ ) {
+      document.getElementById( id ).classList.toggle( class_ );
+    }
+
     function changeText(element, text){
       document.getElementById(element).innerHTML = '';
       document.getElementById(element).appendChild( document.createTextNode( text ) );
@@ -48,9 +52,9 @@
     }
 
     function chooseDoor( id ) {
-      changeBorder( id, '#00A9C5' );
+      addClass(id, 'door-chosen');
       if( secondChosenDoor ){
-        removeBorder( firstChosenDoor, '#00A9C5' );
+        removeClass( firstChosenDoor, 'door-chosen');
       }
     }
 
@@ -66,9 +70,9 @@
 
       setTimeout(function () {
         firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
-        changeBackground( firstOpened , '#875E5E' );
+        addClass(firstOpened, 'door-zonk');
         addLogMessage('Door number ' + (+firstOpened.match(/[0-9]/g) + 1) + ' have a zonk!');
-        changeText(firstOpened, 'zork');
+        changeText(firstOpened, 'zonk');
         removeClass('bar', 'active-bar');
 
       }, 1000);
@@ -79,19 +83,19 @@
       for ( i = 0; i < doors.length; i++ ) {
 
         if( doors[ i ] === 'car' && choice === 'door-' + i ){
-          changeBackground( 'door-' + i , '#08B400' );
+          addClass( 'door-' + i , 'door-car' );
           changeText('door-' + i, 'car');
           addLogMessage('You won! Door number '+ (i + 1) +' have a car');
         } else if( doors[ i ] === 'car' ) {
-          changeBackground( 'door-' + i , '#00570F' );
+          addClass( 'door-' + i , 'door-car-was' );
           changeText('door-' + i, 'car');
           addLogMessage('You lose! Door number '+ (i + 1) +' have a car and you choose door number ' + (+choice.match(/[0-9]/g) + 1));
         } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
-          changeBackground( 'door-' + i , '#DA0000' );
-          changeText('door-' + i, 'zork');
+          addClass( 'door-'+i, 'door-wrong')
+          changeText('door-' + i, 'zonk');
         } else {
-          changeBackground( 'door-' + i , '#875E5E' );
-          changeText('door-' + i, 'zork');
+          addClass( 'door-' + i , 'door-zonk');
+          changeText('door-' + i, 'zonk');
         }
 
       }
@@ -108,8 +112,11 @@
       doors = generateDoors();
       //close all doors
       for ( i = 0; i < doors.length; i++ ) {
-        changeBackground( 'door-' + i , '#70401C' );
-        removeBorder( 'door-' + i );
+        removeClass( 'door-' + i, 'door-chosen');
+        removeClass( 'door-' + i, 'door-zonk');
+        removeClass( 'door-' + i, 'door-car');
+        removeClass( 'door-' + i, 'door-wrong');
+        removeClass( 'door-' + i, 'door-car-was');
         changeText('door-' + i, (i + 1));
       }
     }
