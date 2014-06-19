@@ -35,44 +35,46 @@
       allDoorsOpen = false,
       logContainer = document.getElementById('log'),
       automatic = false,
+      mode = false,
+      alternateMode = true,
       results = {
         winsChangeDoor: 0,
         loseChangeDoor: 0,
         winsWithoutChangeDoor: 0,
         loseWithoutChangeDoor: 0,
         updateTable: function() {
-          document.getElementById('win-total').innerHTML = this.totalWins()+' wins';
-          document.getElementById('lose-total').innerHTML = this.totalLoses()+' loses';
-          document.getElementById('total').innerHTML = this.totalMatches()+' matches';
+          document.getElementById('change-door-total').innerHTML = this.totalChangeDoor();
+          document.getElementById('without-change-door-total').innerHTML = this.totalWithoutChangeDoor();
+          document.getElementById('total').innerHTML = this.totalMatches();
         },
         setWin: function() {
           if(secondChosenDoor){
             this.winsChangeDoor += 1;
-            document.getElementById('win-change-door').innerHTML = this.winsChangeDoor+' wins';
+            document.getElementById('win-change-door').innerHTML = this.winsChangeDoor;
           } else {
             this.winsWithoutChangeDoor += 1;
-            document.getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor+' wins';
+            document.getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor;
           }
           this.updateTable();
         },
         setLose: function() {
           if(secondChosenDoor){
             this.loseChangeDoor += 1;
-            document.getElementById('lose-change-door').innerHTML = this.loseChangeDoor+' loses';
+            document.getElementById('lose-change-door').innerHTML = this.loseChangeDoor;
           } else {
             this.loseWithoutChangeDoor += 1;
-            document.getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor+' loses';
+            document.getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor;
           }
           this.updateTable();
         },
-        totalWins: function() {
-          return this.winsChangeDoor + this.winsWithoutChangeDoor;
+        totalChangeDoor: function() {
+          return this.winsChangeDoor + this.loseChangeDoor;
         },
-        totalLoses: function() {
-          return this.loseChangeDoor + this.loseWithoutChangeDoor;
+        totalWithoutChangeDoor: function() {
+          return this.winsWithoutChangeDoor + this.loseWithoutChangeDoor;
         },
         totalMatches: function() {
-          return this.totalWins() + this.totalLoses();
+          return this.totalChangeDoor() + this.totalWithoutChangeDoor();
         }
       },
       logMessages = {
@@ -251,13 +253,18 @@
 
       if(allDoorsOpen){
         clear();
+        if(alternateMode){
+          mode = !mode;
+        }
       }
+
+      console.log(mode);
 
       if( !firstChosenDoor ){
 
       setFirstChosenDoor( 'door-' + randomChoice( [0, 1, 2] ) );
 
-      } else if ( !secondChosenDoor && !allDoorsOpen && firstOpened ){
+      } else if ( !secondChosenDoor && !allDoorsOpen && firstOpened && mode ){
 
         setSecondChosenDoor( 'door-'+[0, 1, 2].filter(function(element) {
 
@@ -266,7 +273,7 @@
         } ) );
       }
 
-      if(firstChosenDoor && secondChosenDoor){
+      if(firstChosenDoor || (mode && secondChosenDoor) ){
         openDoors();
       }
 
