@@ -183,6 +183,18 @@ body{
     background: #FF8787
 }
 
+td.green{
+    background: #7EFF84;
+}
+
+td.red{
+    background: #FF8787;
+}
+
+td.blue{
+    background: #68D8FF;
+}
+
 td, th{
     padding: 10px;
     text-align: center;

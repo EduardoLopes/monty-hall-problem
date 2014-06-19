@@ -51,13 +51,16 @@
           if(secondChosenDoor){
             this.winsChangeDoor += 1;
             document.getElementById('win-change-door').innerHTML = this.winsChangeDoor;
+            addClass('win-change-door', 'green');
+            addClass('change-door-total', 'blue');
           } else {
             this.winsWithoutChangeDoor += 1;
             document.getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor;
+            addClass('win-without-change-door', 'green');
+            addClass('without-change-door-total', 'blue');
           }
-
-          document.getElementById('status').classList.remove('lose');
-          document.getElementById('status').classList.add('won');
+          addClass('status', 'won');
+          removeClass('status', 'lose');
           document.getElementById('status').innerHTML = 'WON!';
           this.updateTable();
         },
@@ -65,13 +68,17 @@
           if(secondChosenDoor){
             this.loseChangeDoor += 1;
             document.getElementById('lose-change-door').innerHTML = this.loseChangeDoor;
+            addClass('lose-change-door', 'red');
+            addClass('change-door-total', 'blue');
           } else {
             this.loseWithoutChangeDoor += 1;
             document.getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor;
+            addClass('without-change-door-total', 'blue');
+            addClass('lose-without-change-door', 'red');
           }
 
-          document.getElementById('status').classList.add('lose');
-          document.getElementById('status').classList.remove('won');
+          removeClass('status', 'won');
+          addClass('status', 'lose');
           document.getElementById('status').innerHTML = 'LOSE!';
           this.updateTable();
         },
@@ -82,6 +89,7 @@
           return this.winsWithoutChangeDoor + this.loseWithoutChangeDoor;
         },
         totalMatches: function() {
+          addClass('total', 'blue');
           return this.totalChangeDoor() + this.totalWithoutChangeDoor();
         }
       },
@@ -232,15 +240,19 @@
     removeLogMessages();
     //close all doors
     for ( i = 0; i < doors.length; i++ ) {
-      removeClass( 'door-' + i, 'door-chosen');
-      removeClass( 'door-' + i, 'door-zonk');
-      removeClass( 'door-' + i, 'door-car');
-      removeClass( 'door-' + i, 'door-wrong');
-      removeClass( 'door-' + i, 'door-car-was');
+      document.getElementById('door-' + i).classList.remove('door-chosen', 'door-zonk', 'door-car', 'door-wrong', 'door-car-was');
       changeText('door-' + i, (i + 1));
     }
     document.getElementById('status').classList.remove('won', 'lose');
     document.getElementById('status').innerHTML = '';
+
+    removeClass('change-door-total', 'blue');
+    removeClass('without-change-door-total', 'blue');
+    removeClass('total', 'blue');
+    removeClass('win-change-door', 'green');
+    removeClass('win-without-change-door', 'green');
+    removeClass('lose-change-door', 'red');
+    removeClass('lose-without-change-door', 'red');
   }
 
   document.getElementById( 'new' ).onclick = clear;
@@ -267,8 +279,6 @@
           mode = !mode;
         }
       }
-
-      console.log(mode);
 
       if( !firstChosenDoor ){
 
