@@ -1,30 +1,38 @@
 (function() {
   'use strict';
 
+  var elements = [];
+
   function random( min, max ) {
     return ( min + ( Math.random() * ( max - min ) ) );
   }
 
   function randomChoice(array){
-
     return array[ Math.round( random( 0, array.length - 1 ) ) ];
   }
 
+  function getElementById(id){
+    if(!elements[id]){
+      elements[id] = document.getElementById( id );
+    }
+    return elements[id];
+  }
+
   function addClass( id, class_ ) {
-    document.getElementById( id ).classList.add( class_ );
+    getElementById( id ).classList.add( class_ );
   }
 
   function removeClass( id, class_ ) {
-    document.getElementById( id ).classList.remove( class_ );
+    getElementById( id ).classList.remove( class_ );
   }
 
   function toggleClass( id, class_ ) {
-    document.getElementById( id ).classList.toggle( class_ );
+    getElementById( id ).classList.toggle( class_ );
   }
 
   function changeText(element, text){
-    document.getElementById(element).innerHTML = '';
-    document.getElementById(element).appendChild( document.createTextNode( text ) );
+    getElementById(element).innerHTML = '';
+    getElementById(element).appendChild( document.createTextNode( text ) );
   }
 
   var firstChosenDoor,
@@ -43,43 +51,43 @@
         winsWithoutChangeDoor: 0,
         loseWithoutChangeDoor: 0,
         updateTable: function() {
-          document.getElementById('change-door-total').innerHTML = this.totalChangeDoor();
-          document.getElementById('without-change-door-total').innerHTML = this.totalWithoutChangeDoor();
-          document.getElementById('total').innerHTML = this.totalMatches();
+          getElementById('change-door-total').innerHTML = this.totalChangeDoor();
+          getElementById('without-change-door-total').innerHTML = this.totalWithoutChangeDoor();
+          getElementById('total').innerHTML = this.totalMatches();
         },
         setWin: function() {
           if(secondChosenDoor){
             this.winsChangeDoor += 1;
-            document.getElementById('win-change-door').innerHTML = this.winsChangeDoor;
+            getElementById('win-change-door').innerHTML = this.winsChangeDoor;
             addClass('win-change-door', 'green');
             addClass('change-door-total', 'blue');
           } else {
             this.winsWithoutChangeDoor += 1;
-            document.getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor;
+            getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor;
             addClass('win-without-change-door', 'green');
             addClass('without-change-door-total', 'blue');
           }
           addClass('status', 'won');
           removeClass('status', 'lose');
-          document.getElementById('status').innerHTML = 'WON!';
+          getElementById('status').innerHTML = 'WON!';
           this.updateTable();
         },
         setLose: function() {
           if(secondChosenDoor){
             this.loseChangeDoor += 1;
-            document.getElementById('lose-change-door').innerHTML = this.loseChangeDoor;
+            getElementById('lose-change-door').innerHTML = this.loseChangeDoor;
             addClass('lose-change-door', 'red');
             addClass('change-door-total', 'blue');
           } else {
             this.loseWithoutChangeDoor += 1;
-            document.getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor;
+            getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor;
             addClass('without-change-door-total', 'blue');
             addClass('lose-without-change-door', 'red');
           }
 
           removeClass('status', 'won');
           addClass('status', 'lose');
-          document.getElementById('status').innerHTML = 'LOSE!';
+          getElementById('status').innerHTML = 'LOSE!';
           this.updateTable();
         },
         totalChangeDoor: function() {
@@ -215,7 +223,7 @@
     }
   }
 
-  document.getElementById( 'stage' ).onclick = function choose( event ) {
+  getElementById( 'stage' ).onclick = function choose( event ) {
 
     if( !( /door-[0-9]/g.test( event.toElement.id ) ) ){
       return false;
@@ -240,11 +248,11 @@
     removeLogMessages();
     //close all doors
     for ( i = 0; i < doors.length; i++ ) {
-      document.getElementById('door-' + i).classList.remove('door-chosen', 'door-zonk', 'door-car', 'door-wrong', 'door-car-was');
+      getElementById('door-' + i).classList.remove('door-chosen', 'door-zonk', 'door-car', 'door-wrong', 'door-car-was');
       changeText('door-' + i, (i + 1));
     }
-    document.getElementById('status').classList.remove('won', 'lose');
-    document.getElementById('status').innerHTML = '';
+    getElementById('status').classList.remove('won', 'lose');
+    getElementById('status').innerHTML = '';
 
     removeClass('change-door-total', 'blue');
     removeClass('without-change-door-total', 'blue');
@@ -255,22 +263,22 @@
     removeClass('lose-without-change-door', 'red');
   }
 
-  document.getElementById( 'new' ).onclick = clear;
+  getElementById( 'new' ).onclick = clear;
 
-  document.getElementById( 'open' ).onclick = openDoors;
+  getElementById( 'open' ).onclick = openDoors;
 
-  document.getElementById( 'auto' ).onclick = function() {
+  getElementById( 'auto' ).onclick = function() {
 
     automatic = !automatic;
     if(automatic){
-      document.getElementById( 'auto' ).innerHTML = 'Stop Automatic';
+      getElementById( 'auto' ).innerHTML = 'Stop Automatic';
     }
 
     var intervalId = setInterval(function () {
 
       if(!automatic){
         clearInterval(intervalId);
-        document.getElementById( 'auto' ).innerHTML = 'Automatic';
+        getElementById( 'auto' ).innerHTML = 'Automatic';
       }
 
       if(allDoorsOpen){
