@@ -35,6 +35,46 @@
       allDoorsOpen = false,
       logContainer = document.getElementById('log'),
       automatic = false,
+      results = {
+        winsChangeDoor: 0,
+        loseChangeDoor: 0,
+        winsWithoutChangeDoor: 0,
+        loseWithoutChangeDoor: 0,
+        updateTable: function() {
+          document.getElementById('win-total').innerHTML = this.totalWins()+' wins';
+          document.getElementById('lose-total').innerHTML = this.totalLoses()+' loses';
+          document.getElementById('total').innerHTML = this.totalMatches()+' matches';
+        },
+        setWinChangeDoor: function() {
+          this.winsChangeDoor += 1;
+          document.getElementById('win-change-door').innerHTML = this.winsChangeDoor+' wins';
+          this.updateTable();
+        },
+        setWinWithoutChangeDoor: function() {
+          this.winsWithoutChangeDoor += 1;
+          document.getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor+' wins';
+          this.updateTable();
+        },
+        setLoseChangeDoor: function() {
+          this.loseChangeDoor += 1;
+          document.getElementById('lose-change-door').innerHTML = this.loseChangeDoor+' loses';
+          this.updateTable();
+        },
+        setLoseWithoutChangeDoor: function() {
+          this.loseWithoutChangeDoor += 1;
+          document.getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor+' loses';
+          this.updateTable();
+        },
+        totalWins: function() {
+          return this.winsChangeDoor + this.winsWithoutChangeDoor;
+        },
+        totalLoses: function() {
+          return this.loseChangeDoor + this.loseWithoutChangeDoor;
+        },
+        totalMatches: function() {
+          return this.totalWins() + this.totalLoses();
+        }
+      },
       logMessages = {
         win: function() {
           return 'You won! Door number '+ extractDoorNumber( choice ) +' have a car!';
@@ -108,10 +148,20 @@
         addClass( 'door-' + i , 'door-car' );
         changeText('door-' + i, 'car');
         addLogMessage( logMessages.win() );
-      } else if( doors[ i ] === 'car' ) {
+        if(secondChosenDoor){
+          results.setWinChangeDoor();
+        } else {
+          results.setWinWithoutChangeDoor();
+        }
+      } else if( doors[ i ] === 'car' && choice !== 'door-' + i ) {
         addClass( 'door-' + i , 'door-car-was' );
         changeText('door-' + i, 'car');
         addLogMessage( logMessages.lose( i + 1 ) );
+        if(secondChosenDoor){
+          results.setLoseChangeDoor();
+        } else {
+          results.setWinWithoutChangeDoor();
+        }
       } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
         addClass( 'door-'+i, 'door-wrong')
         changeText('door-' + i, 'zonk');
