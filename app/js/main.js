@@ -55,6 +55,10 @@
             this.winsWithoutChangeDoor += 1;
             document.getElementById('win-without-change-door').innerHTML = this.winsWithoutChangeDoor;
           }
+
+          document.getElementById('status').classList.remove('lose');
+          document.getElementById('status').classList.add('won');
+          document.getElementById('status').innerHTML = 'WON!';
           this.updateTable();
         },
         setLose: function() {
@@ -65,6 +69,10 @@
             this.loseWithoutChangeDoor += 1;
             document.getElementById('lose-without-change-door').innerHTML = this.loseWithoutChangeDoor;
           }
+
+          document.getElementById('status').classList.add('lose');
+          document.getElementById('status').classList.remove('won');
+          document.getElementById('status').innerHTML = 'LOSE!';
           this.updateTable();
         },
         totalChangeDoor: function() {
@@ -231,6 +239,8 @@
       removeClass( 'door-' + i, 'door-car-was');
       changeText('door-' + i, (i + 1));
     }
+    document.getElementById('status').classList.remove('won', 'lose');
+    document.getElementById('status').innerHTML = '';
   }
 
   document.getElementById( 'new' ).onclick = clear;
