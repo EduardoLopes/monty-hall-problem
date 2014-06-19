@@ -5,6 +5,11 @@
     return ( min + ( Math.random() * ( max - min ) ) );
   }
 
+  function randomChoice(array){
+
+    return array[ Math.round( random( 0, array.length - 1 ) ) ];
+  }
+
   function addClass( id, class_ ) {
     document.getElementById( id ).classList.add( class_ );
   }
@@ -29,6 +34,7 @@
       firstOpened,
       allDoorsOpen = false,
       logContainer = document.getElementById('log'),
+      automatic = false,
       logMessages = {
         win: function() {
           return 'You won! Door number '+ extractDoorNumber( choice ) +' have a car!';
@@ -80,7 +86,7 @@
     }
 
     setTimeout(function () {
-      firstOpened = 'door-'+ canOpen[ Math.round( random( 0, canOpen.length - 1 ) ) ];
+      firstOpened = 'door-'+ randomChoice(canOpen);
       addClass(firstOpened, 'door-zonk');
       addLogMessage(logMessages.firstOpenedDoor());
       changeText(firstOpened, 'zonk');
@@ -163,7 +169,7 @@
 
   };
 
-  document.getElementById( 'new' ).onclick = function () {
+  function clear() {
     var i;
     firstChosenDoor = null;
     secondChosenDoor = null;
@@ -183,6 +189,46 @@
     }
   }
 
+  document.getElementById( 'new' ).onclick = clear;
+
   document.getElementById( 'open' ).onclick = openDoors;
+
+  document.getElementById( 'auto' ).onclick = function() {
+
+    automatic = !automatic;
+    if(automatic){
+      document.getElementById( 'auto' ).innerHTML = 'Stop Automatic';
+    }
+
+    var intervalId = setInterval(function () {
+
+      if(!automatic){
+        clearInterval(intervalId);
+        document.getElementById( 'auto' ).innerHTML = 'Automatic';
+      }
+
+      if(allDoorsOpen){
+        clear();
+      }
+
+      if( !firstChosenDoor ){
+
+      setFirstChosenDoor( 'door-' + randomChoice( [0, 1, 2] ) );
+
+      } else if ( !secondChosenDoor && !allDoorsOpen && firstOpened ){
+
+        setSecondChosenDoor( 'door-'+[0, 1, 2].filter(function(element) {
+
+          return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) )
+
+        } ) );
+      }
+
+      if(firstChosenDoor && secondChosenDoor){
+        openDoors();
+      }
+
+    }, 500);
+  };
 
 }());
