@@ -145,7 +145,8 @@ body{
 
 .door-car-was{
     color: #ddffdb;
-    background: #004c03;
+    background: #466b00;
+    border: 10px solid #1e2d00;
 }
 
 .percentage{
