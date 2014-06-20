@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Eduardo Lopes -- Developes -- @EdoardoLopes
+
+# THANKS
+
+    Numberphile youtube channel that makes a lot of cool videos
+	
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    Normalize.css, Modernizr
