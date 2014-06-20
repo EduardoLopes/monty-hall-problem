@@ -45,6 +45,7 @@
       automatic = false,
       mode = false,
       alternateMode = true,
+      showAbout = false,
       results = {
         winsChangeDoor: 0,
         loseChangeDoor: 0,
@@ -108,6 +109,15 @@
         lose: function(doorWithCar) {
           return 'You lose! Door number '+ doorWithCar +' have a car and you choose door number ' + extractDoorNumber(choice);
         },
+        askForChangeDoor: function() {
+          var door = [0, 1, 2].filter(function(element) {
+
+            return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) )
+
+          } );
+
+          return 'Do you want to pick door number '+extractDoorNumber( 'door-'+door )+'?';
+        },
         firstOpenedDoor: function() {
           return 'Door number ' + extractDoorNumber( firstOpened ) + ' have a zonk!';
         },
@@ -157,6 +167,7 @@
       addLogMessage(logMessages.firstOpenedDoor());
       changeText(firstOpened, 'zonk');
       removeClass('bar', 'active-bar');
+      addLogMessage(logMessages.askForChangeDoor());
     }, 1000);
 
   }
@@ -306,6 +317,17 @@
       }
 
     }, 500);
+  };
+
+  getElementById('about').onclick = function() {
+    showAbout = !showAbout;
+
+    if(showAbout){
+      removeClass('about-container','visuallyhidden');
+    } else {
+      addClass('about-container','visuallyhidden');
+    }
+
   };
 
 }());
