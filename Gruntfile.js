@@ -128,7 +128,7 @@ module.exports = function(grunt) {
 
     uncss: {
       options: {
-        ignore: ['.active-bar', '.message-log']
+        ignore: ['.active-bar', '.message-log', '.door-chosen', '.door-zonk', '.door-car', '.door-wrong', '.door-car-was', 'td.green', 'td.blue', 'td.red', '#status.won', '#status.lose']
       },
       dist: {
         files: {
