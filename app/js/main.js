@@ -42,7 +42,7 @@
     //the second chosen door
     secondChosenDoor,
     //have a random door sequence
-    doors = generateDoors(),
+    doors,
     //the last chosen door
     choice,
     //door open after the first was choose
@@ -157,7 +157,7 @@
         //look for the only door that can be selected
         var door = [0, 1, 2].filter(function(element) {
 
-          return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) )
+          return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
 
         } );
 
@@ -177,7 +177,7 @@
       },
       //shown when all doors are open
       allDoorsOpen: function() {
-        return 'All doors open!'
+        return 'All doors open!';
       }
     };
 
@@ -193,11 +193,14 @@
   }
 
   //random generate the sequence of the doors
-  function generateDoors () {
-    return [ 'car', 'zonk', 'zonk' ].sort(function() {
+  function generateDoors() {
+    doors = [ 'car', 'zonk', 'zonk' ].sort(function() {
       return Math.round( random(-1, 2) );
     });
   }
+
+  //generate door sequence
+  generateDoors();
 
   //change the class of the chosen door
   function chooseDoor( id ) {
@@ -267,7 +270,7 @@
         results.setLose();
       //if choose a dor with a zonk shows this door paint of red
       } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
-        addClass( 'door-'+i, 'door-wrong')
+        addClass( 'door-'+i, 'door-wrong');
         changeText('door-' + i, 'zonk');
       //show the others doors with a zonk
       } else {
@@ -334,7 +337,7 @@
     * - if all door are not alrady open
     **/
     } else if ( !secondChosenDoor && event.toElement.id !== firstChosenDoor && event.toElement.id !== firstOpened && !allDoorsOpen){
-      setSecondChosenDoor( event.toElement.id )
+      setSecondChosenDoor( event.toElement.id );
     }
 
   };
@@ -349,7 +352,7 @@
     firstOpened = null;
     allDoorsOpen = false;
     //generate another door sequence
-    doors = generateDoors();
+    generateDoors();
     //remove log messages
     removeLogMessages();
 
@@ -424,7 +427,7 @@
 
         setSecondChosenDoor( 'door-'+[0, 1, 2].filter(function(element) {
           //remove the already chosen doors form the array
-          return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) )
+          return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
 
         } ) );
       }
