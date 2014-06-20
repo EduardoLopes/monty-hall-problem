@@ -183,12 +183,12 @@
     for ( i = 0; i < doors.length; i++ ) {
       if( doors[ i ] === 'car' && choice === 'door-' + i ){
         addClass( 'door-' + i , 'door-car' );
-        changeText('door-' + i, 'car');
+        changeText('door-' + i, 'CAR');
         addLogMessage( logMessages.win() );
         results.setWin();
       } else if( doors[ i ] === 'car' && choice !== 'door-' + i ) {
         addClass( 'door-' + i , 'door-car-was' );
-        changeText('door-' + i, 'car');
+        changeText('door-' + i, 'CAR');
         addLogMessage( logMessages.lose( i + 1 ) );
         results.setLose();
       } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
