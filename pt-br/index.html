@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Monty Hall Problem</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="../css/style.css">
+
+        <script src="../js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+        var pt_br = true;
+        </script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="container">
+            <div id="stage" class="row">
+                <div class="col-md-12">
+                    <center><h1>Problema de Monty Hall <a href="#about" id="about">( ? )</a></h1></center>
+                    <div id="about-container" class="visuallyhidden">
+
+                        <h5>Origem: Wikipédia, a enciclopédia livre.</h5>
+
+                        <p>O jogo consiste no seguinte: Monty Hall (o apresentador) apresentava 3 portas aos concorrentes, sabendo que atrás de uma delas está um carro (prêmio bom) e que as outras têm prêmios de pouco valor.</p>
+                        <ul>
+                            <li>Na 1ª etapa o concorrente escolhe uma porta (que ainda não é aberta);</li>
+                            <li>De seguida Monty abre uma das outras duas portas que o concorrente não escolheu, sabendo à partida que o carro não se encontra aí;</li>
+                            <li>Agora com duas portas apenas para escolher — pois uma delas já se viu, na 2ª etapa, que não tinha o prêmio — e sabendo que o carro está atrás de uma delas, o concorrente tem que se decidir se permanece com a porta que escolheu no início do jogo e abre-a ou se muda para a outra porta que ainda está fechada para então a abrir.</li>
+                        </ul>
+
+                        <p>Qual é a estratégia mais lógica? Ficar com a porta escolhida inicialmente ou mudar de porta? Com qual das duas portas ainda fechadas o concorrente tem mais probabilidades de ganhar? Por quê?</p>
+
+                        <p>Realmente não é assim tão indiferente mudar ou ficar na mesma porta. No início, quando se escolheu uma das portas, havia 1/3 de probabilidade de ganhar o carro. Não existe razão nenhuma para essa probabilidade mudar após o Monty Hall ter aberto uma das portas que não era premiada. As outras duas portas não escolhidas tinham em conjunto 2/3 de probabilidade de ocultarem o carro, e quando uma dessa portas é aberta (por não ter prêmio) a porta não escolhida que continua fechada passa a ter 2/3 de probabilidade de ser a porta do carro.</p>
+
+                        <p>A confusão é feita seguindo o raciocínio que parece mais lógico: "mas a porta escolhida também continua fechada... então cada uma das portas fechadas passa a ter 1/2 de chance de ter o carro".</p>
+
+                        <hr>
+                        Assista <a href="https://www.youtube.com/watch?v=4Lb-6rxZxx0"> este video do numberphilie </a> sobre o Problema de Monty Hall!
+                        <hr>
+
+                        <h2>Como o modo automatico funciona</h2>
+                        <ul>
+                            <li>Escolhe uma porta aléatoriamente</li>
+                            <li>Uma das duas portas que tem um 'zonk' é aberta</li>
+                            <li>Escolhe outra porta ou não (alternadamente)</li>
+                            <li>Abre todas as portas para ver se ganhou ou perdeu</li>
+                        </ul>
+
+                        <hr>
+
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <table>
+                      <tbody>
+                        <tr>
+                            <td id="status"></td>
+                            <td><b>Vitorias</b></td>
+                            <td><b>Perdas</b></td>
+                            <td><b>Total</b></td>
+                            <td><b>Total de Partidas</b></td>
+                        </tr>
+                        <tr>
+                            <td><b>Trocando de porta</b></td>
+                            <td id="win-change-door">0</td>
+                            <td id="lose-change-door">0</td>
+                            <td id="change-door-total">0</td>
+                            <td rowspan="2" id="total">0</td>
+                        </tr>
+                        <tr>
+                            <td><b>Sem trocar de porta</b></td>
+                            <td id="win-without-change-door">0</td>
+                            <td id="lose-without-change-door">0</td>
+                            <td id="without-change-door-total">0</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+                <div class="percentage col-md-12">
+                    <div id="bar" class="bar"></div>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <div id="door-0" class="door door-0"> 1 </div>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <div id="door-1" class="door door-1"> 2 </div>
+                </div>
+                <div class="col-xs-4 col-md-4">
+                    <div id="door-2" class="door door-2"> 3 </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-4 menu">
+                    <button id="new">Novo</button>
+                    <button id="open">Abrir portas</button>
+                    <button id="auto">Automatico</button>
+                </div>
+                <div class="col-md-8">
+                    <ul id="log" class="log col-md-12">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <footer>
+                        <center>Feito por Eduardo Lopes | twitter: <a href="https://twitter.com/edoardolopes">@EdoardoLopes</a> | github: <a href="https://github.com/EduardoLopes">EduardoLopes</a> | <a href="/">EN Version</a></center>
+                    </footer>
+                </div>
+            </div>
+        </div>
+
+        <script src="../js/main.js"></script>
+
+    </body>
+</html>
