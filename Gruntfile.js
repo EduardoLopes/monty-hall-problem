@@ -67,10 +67,8 @@ module.exports = function(grunt) {
           dest: '<%= dist %>',
           src: [
             '*.{ico,png,txt}',
-            'js/vendor/{,*/}*.js',
-            'js/require.js',
-            'js/map/*.json',
             'img/*.{png,jpeg,jpg}',
+            'pt-br/*',
             '*.html'
           ]
         }]

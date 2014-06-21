@@ -1,7 +1,9 @@
-(function() {
+(function(global) {
   'use strict';
 
   var elements = [];
+  //i think this is not the best way to translate something inside the code, but ¯\_(ツ)_/¯.
+  var pt_br = (global.pt_br) ? true : false;
 
   //return a random number between min and max
   function random( min, max ) {
@@ -99,7 +101,12 @@
         //update table
         addClass('status', 'won');
         removeClass('status', 'lose');
-        getElementById('status').innerHTML = 'WON!';
+        if(pt_br){
+          getElementById('status').innerHTML = 'Ganhou!';
+        } else {
+          getElementById('status').innerHTML = 'WON!';
+        }
+
         this.updateTable();
       },
       setLose: function() {
@@ -125,7 +132,13 @@
         //update table
         removeClass('status', 'won');
         addClass('status', 'lose');
-        getElementById('status').innerHTML = 'LOSE!';
+
+        if(pt_br){
+          getElementById('status').innerHTML = 'Perdeu!';
+        } else {
+          getElementById('status').innerHTML = 'LOSE!';
+        }
+
         this.updateTable();
       },
       //return the total of matches changing door
@@ -146,10 +159,16 @@
     logMessages = {
       //shown this log message when win
       win: function() {
+        if(pt_br){
+          return 'Você ganhou! Porta número '+ extractDoorNumber( choice ) +' tem um carro!';
+        }
         return 'You won! Door number '+ extractDoorNumber( choice ) +' have a car!';
       },
       //shown when lose
       lose: function(doorWithCar) {
+        if(pt_br){
+          return 'Você perdeu! Porta número '+ doorWithCar +' have a car and you choose door number ' + extractDoorNumber(choice);
+        }
         return 'You lose! Door number '+ doorWithCar +' have a car and you choose door number ' + extractDoorNumber(choice);
       },
       //shown after the first door is open
@@ -161,22 +180,39 @@
 
         } );
 
+        if(pt_br){
+          return 'Você quer escolher a porta numero '+extractDoorNumber( 'door-'+door )+'?';
+        }
+
         return 'Do you want to pick door number '+extractDoorNumber( 'door-'+door )+'?';
       },
       //shown after the first door is opened
       firstOpenedDoor: function() {
+        if(pt_br){
+          return 'Porta numero ' + extractDoorNumber( firstOpened ) + ' tem um \'zonk\'!';
+        }
         return 'Door number ' + extractDoorNumber( firstOpened ) + ' have a zonk!';
       },
       //shown when select te first door
       chooseFirstDoor: function() {
+        if(pt_br){
+          console.log('a');
+          return 'Você escolheu a porta numero '+ extractDoorNumber( firstChosenDoor );
+        }
         return 'You choose the door number '+ extractDoorNumber( firstChosenDoor );
       },
       //shown when select te second door
       chooseSecondDoor: function() {
+        if(pt_br){
+          return 'Você escolheu trocar a porta numero '+ extractDoorNumber( firstChosenDoor )+' pela porta numero '+ extractDoorNumber( secondChosenDoor );
+        }
         return  'You choose change your door ( '+ extractDoorNumber( firstChosenDoor ) +' ) to the door number '+ extractDoorNumber( secondChosenDoor );
       },
       //shown when all doors are open
       allDoorsOpen: function() {
+        if(pt_br){
+          return 'Todas as portas foram abertas';
+        }
         return 'All doors open!';
       }
     };
@@ -391,7 +427,12 @@
     automatic = !automatic;
     //if automatic is on
     if(automatic){
-      getElementById( 'auto' ).innerHTML = 'Stop Automatic';
+      if(pt_br){
+        getElementById( 'auto' ).innerHTML = 'Parar Automático';
+      } else {
+        getElementById( 'auto' ).innerHTML = 'Stop Automatic';
+      }
+
     }
 
     //called every 1/2 second
@@ -400,7 +441,12 @@
       //if automatic is off stop setInterval
       if(!automatic){
         clearInterval(intervalId);
-        getElementById( 'auto' ).innerHTML = 'Automatic';
+        if(pt_br){
+          getElementById( 'auto' ).innerHTML = 'Automático';
+        } else {
+          getElementById( 'auto' ).innerHTML = 'Automatic';
+        }
+
       }
 
       //if open all doors
@@ -456,4 +502,4 @@
 
   };
 
-}());
+}(window));
