@@ -3,13 +3,14 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    Eduardo Lopes -- Developes -- @EdoardoLopes
 
 # THANKS
 
-    <name>
+    Numberphile youtube channel that makes a lot of cool videos
+
 
 # TECHNOLOGY COLOPHON
 
     HTML5, CSS3
-    Normalize.css, jQuery, Modernizr
+    Normalize.css, Modernizr
