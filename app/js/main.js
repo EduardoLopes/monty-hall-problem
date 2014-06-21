@@ -371,10 +371,11 @@
     * This check a lot of things:
     * - if the second door was not chosen yet
     * - if the clicked door it's different from the first chosen one
+    * - if the first door was already chosen
     * - if the clicked door it's different form the first open with a zonk
     * - if all door are not alrady open
     **/
-    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && clickedDoor !== firstOpened && !allDoorsOpen){
+    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && ( /door-[0-9]/g.test( firstOpened ) ) && clickedDoor !== firstOpened  &&  !allDoorsOpen){
       setSecondChosenDoor( clickedDoor );
     }
 

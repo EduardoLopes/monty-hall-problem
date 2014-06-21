@@ -69,6 +69,7 @@ module.exports = function(grunt) {
             '*.{ico,png,txt}',
             'img/*.{png,jpeg,jpg}',
             'pt-br/*',
+            'js/vendor/*',
             '*.html'
           ]
         }]
