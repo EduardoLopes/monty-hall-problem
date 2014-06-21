@@ -320,14 +320,16 @@
   //click event on the container of all doors
   getElementById( 'stage' ).onclick = function choose( event ) {
 
+    var clickedDoor = (event.target) ? event.target.id : event.srcElement.id;
+
     //chack if the clicked element is a door
-    if( !( /door-[0-9]/g.test( event.toElement.id ) ) ){
+    if( !( /door-[0-9]/g.test( clickedDoor ) ) ){
       return false;
     }
 
     //if the first door was not chosen yet
     if( !firstChosenDoor ){
-      setFirstChosenDoor( event.toElement.id );
+      setFirstChosenDoor( clickedDoor );
 
     /**
     * This check a lot of things:
@@ -336,8 +338,8 @@
     * - if the clicked door it's different form the first open with a zonk
     * - if all door are not alrady open
     **/
-    } else if ( !secondChosenDoor && event.toElement.id !== firstChosenDoor && event.toElement.id !== firstOpened && !allDoorsOpen){
-      setSecondChosenDoor( event.toElement.id );
+    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && clickedDoor !== firstOpened && !allDoorsOpen){
+      setSecondChosenDoor( clickedDoor );
     }
 
   };
