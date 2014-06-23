@@ -615,18 +615,18 @@
 
     if(oneHundredMode){
       if(pt_br){
-        getElementById( 'one-hundred' ).innerHTML = '3 doors';
-      } else {
         getElementById( 'one-hundred' ).innerHTML = '3 portas';
+      } else {
+        getElementById( 'one-hundred' ).innerHTML = '3 doors';
       }
 
     }
 
     if(!oneHundredMode){
       if(pt_br){
-        getElementById( 'one-hundred' ).innerHTML = '100 doors';
-      } else {
         getElementById( 'one-hundred' ).innerHTML = '100 portas';
+      } else {
+        getElementById( 'one-hundred' ).innerHTML = '100 doors';
       }
       removeClass('door-0', 'door-100');
       removeClass('door-1', 'door-100');
