@@ -59,8 +59,14 @@
     mode = false,
     //turn on alternate between mode 0 (false, 'change door') and mode 1 (true, 'without change door')
     alternateMode = true,
+    //Turn on the one hundred doors mode
+    oneHundredMode = false,
     //is set to true when about 'button' is pressed
+    doorNumbers = [],
+    //when true show about container
     showAbout = false,
+    //used for one hundred doors mode, it's the last door to pick
+    lastDoor,
     //hold the results of the game
     results = {
       //is incremented +1 when win changing door
@@ -171,20 +177,25 @@
         }
         return 'You lose! Door number '+ doorWithCar +' have a car and you choose door number ' + extractDoorNumber(choice);
       },
-      //shown after the first door is open
+      //shown after the first door wis open
       askForChangeDoor: function() {
+        var door;
         //look for the only door that can be selected
-        var door = [0, 1, 2].filter(function(element) {
+        if(oneHundredMode){
+          door = lastDoor;
+        } else {
+          door = 'door-'+doorNumbers.filter(function(element) {
 
-          return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
+            return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
 
-        } );
-
-        if(pt_br){
-          return 'Você quer escolher a porta numero '+extractDoorNumber( 'door-'+door )+'?';
+          } );
         }
 
-        return 'Do you want to pick door number '+extractDoorNumber( 'door-'+door )+'?';
+        if(pt_br){
+          return 'Você quer escolher a porta numero '+extractDoorNumber( door )+'?';
+        }
+
+        return 'Do you want to pick door number '+extractDoorNumber( door )+'?';
       },
       //shown after the first door is opened
       firstOpenedDoor: function() {
@@ -196,7 +207,6 @@
       //shown when select te first door
       chooseFirstDoor: function() {
         if(pt_br){
-          console.log('a');
           return 'Você escolheu a porta numero '+ extractDoorNumber( firstChosenDoor );
         }
         return 'You choose the door number '+ extractDoorNumber( firstChosenDoor );
@@ -224,15 +234,67 @@
   */
   function extractDoorNumber(door){
     if(door){
-      return (+door.match(/[0-9]/g) + 1);
+      return (+/door-(\d*)/g.exec(door)[1] + 1);
     }
   }
 
   //random generate the sequence of the doors
   function generateDoors() {
-    doors = [ 'car', 'zonk', 'zonk' ].sort(function() {
+    //doors
+    var d = [], i;
+    //if one hundred mode is true
+    doorNumbers = [];
+
+    if(oneHundredMode){
+      //add car to the array
+      d.push('car');
+      doorNumbers.push(99);
+      //add 99 zonks to the array
+      for (i = 98; i >= 0; i--) {
+        d.push('zonk');
+        doorNumbers.push(i);
+      };
+    } else {
+      //three door
+      d = [ 'car', 'zonk', 'zonk' ];
+      doorNumbers = [0,1,2];
+    }
+    //random mix
+    doors = d.sort(function() {
       return Math.round( random(-1, 2) );
     });
+
+    for (i = 0; i < doors.length; i++) {
+      addDoor(i);
+    };
+  }
+
+  function addDoor(number){
+    var newDoor,
+        doorContainer = document.createElement('div');
+
+    if(!elements['door-'+number]){
+      newDoor = document.createElement('div');
+      newDoor.classList.add('door', 'door-'+number);
+      newDoor.setAttribute('id', 'door-'+number);
+      elements['door-'+number] = newDoor;
+    }
+
+    newDoor = elements['door-'+number];
+
+    if(oneHundredMode){
+      doorContainer.classList.add('col-xs-2', 'col-md-1');
+      newDoor.classList.add('door-100', 'door-'+number);
+    } else {
+      doorContainer.classList.add('col-xs-4', 'col-md-4');
+      newDoor.classList.add('door-'+number);
+      newDoor.appendChild( document.createTextNode( number + 1 ) );
+    }
+
+    doorContainer.appendChild(newDoor);
+    //newLi.appendChild(text);
+    getElementById('doors-container').appendChild(doorContainer);
+
   }
 
   //generate door sequence
@@ -240,7 +302,8 @@
 
   //change the class of the chosen door
   function chooseDoor( id ) {
-    //add class to the chosen dorr
+    //add class to the chosen door
+
     addClass(id, 'door-chosen');
     //if pick another door remove the class 'door-chosen' from the first door chosen
     if( secondChosenDoor ){
@@ -250,8 +313,11 @@
 
   //open the first door
   function openFirstDoor(){
-    var canOpen = [], i;
-
+    var canOpen = [],
+      i,
+      //doorNumber
+      dn,
+      arrayWithoutCar = [];
     //active the 'load' bar
     addClass('bar', 'active-bar');
     //look for doors with zonks
@@ -263,6 +329,42 @@
 
     //wait one second to open the door with a zonk
     setTimeout(function () {
+      if(oneHundredMode){
+        arrayWithoutCar = doorNumbers.filter(function(element) {
+          return !(element === ( extractDoorNumber( firstChosenDoor ) - 1) );
+        });
+
+        dn = randomChoice(arrayWithoutCar);
+        //door that stay closed
+        firstOpened = 'door-'+ dn;
+
+
+        if(doors[dn] === 'car'){
+          lastDoor = 'door-'+dn;
+          for ( i = 0; i < arrayWithoutCar.length; i++ ) {
+            if(arrayWithoutCar[i] !== dn){
+              addClass('door-'+arrayWithoutCar[i], 'door-zonk');
+              changeText('door-'+arrayWithoutCar[i], 'zonk');
+            } else {
+              lastDoor = 'door-'+i;
+            }
+          }
+        } else {
+          lastDoor = 'door-'+doors.indexOf('car');
+          for ( i = 0; i < arrayWithoutCar.length; i++ ) {
+            if(arrayWithoutCar[i] !== doors.indexOf('car')){
+              addClass('door-'+arrayWithoutCar[i], 'door-zonk');
+              changeText('door-'+arrayWithoutCar[i], 'zonk');
+            }
+          }
+        }
+
+        addLogMessage(logMessages.askForChangeDoor());
+        removeClass('bar', 'active-bar');
+
+        return false;
+      }
+
       //random choose a zonk door to open
       firstOpened = 'door-'+ randomChoice(canOpen);
       //'open' this door
@@ -329,6 +431,7 @@
 
   //set the second chosen door
   function setSecondChosenDoor(door){
+    console.log(door);
     secondChosenDoor = door;
     addLogMessage( logMessages.chooseSecondDoor() );
     chooseDoor( secondChosenDoor );
@@ -359,14 +462,12 @@
     var clickedDoor = (event.target) ? event.target.id : event.srcElement.id;
 
     //chack if the clicked element is a door
-    if( !( /door-[0-9]/g.test( clickedDoor ) ) ){
+    if( !( /door-\d*/g.test( clickedDoor ) ) ){
       return false;
     }
-
     //if the first door was not chosen yet
     if( !firstChosenDoor ){
       setFirstChosenDoor( clickedDoor );
-
     /**
     * This check a lot of things:
     * - if the second door was not chosen yet
@@ -375,7 +476,7 @@
     * - if the clicked door it's different form the first open with a zonk
     * - if all door are not alrady open
     **/
-    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && ( /door-[0-9]/g.test( firstOpened ) ) && clickedDoor !== firstOpened  &&  !allDoorsOpen){
+    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && ( /door-\d*/g.test( firstOpened ) ) && doors[ extractDoorNumber(clickedDoor) - 1] !== 'zonk' &&  !allDoorsOpen){
       setSecondChosenDoor( clickedDoor );
     }
 
@@ -390,6 +491,10 @@
     choice = null;
     firstOpened = null;
     allDoorsOpen = false;
+
+    while (getElementById('doors-container').lastChild) {
+      getElementById('doors-container').removeChild(getElementById('doors-container').lastChild);
+    }
     //generate another door sequence
     generateDoors();
     //remove log messages
@@ -413,6 +518,7 @@
     removeClass('win-without-change-door', 'green');
     removeClass('lose-change-door', 'red');
     removeClass('lose-without-change-door', 'red');
+
   }
 
   //button 'new' click event
@@ -423,7 +529,7 @@
 
   //button Automatic click event
   getElementById( 'auto' ).onclick = function() {
-
+    var second;
     //work as a interrupter
     automatic = !automatic;
     //if automatic is on
@@ -463,7 +569,7 @@
       //if the first door was not chosen yet
       if( !firstChosenDoor ){
 
-        setFirstChosenDoor( 'door-' + randomChoice( [0, 1, 2] ) );
+        setFirstChosenDoor( 'door-' + randomChoice( doorNumbers ) );
 
       /**
       * This check a lot of things:
@@ -474,11 +580,20 @@
       **/
       } else if ( !secondChosenDoor && firstOpened && !allDoorsOpen && mode ){
 
-        setSecondChosenDoor( 'door-'+[0, 1, 2].filter(function(element) {
+        if(oneHundredMode){
+
+          setSecondChosenDoor(lastDoor);
+
+          return false;
+        }
+
+        setSecondChosenDoor( 'door-'+ doorNumbers.filter(function(element) {
           //remove the already chosen doors form the array
+
           return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
 
         } ) );
+
       }
 
       //check if the first door was already chosen
@@ -487,6 +602,36 @@
       }
 
     }, 500);
+  };
+
+  getElementById('one-hundred').onclick = function(e) {
+
+    oneHundredMode = !oneHundredMode;
+    automatic = false;
+
+    if(oneHundredMode){
+      if(pt_br){
+        getElementById( 'one-hundred' ).innerHTML = '3 doors';
+      } else {
+        getElementById( 'one-hundred' ).innerHTML = '3 portas';
+      }
+
+    }
+
+    if(!oneHundredMode){
+      if(pt_br){
+        getElementById( 'one-hundred' ).innerHTML = '100 doors';
+      } else {
+        getElementById( 'one-hundred' ).innerHTML = '100 portas';
+      }
+      removeClass('door-0', 'door-100');
+      removeClass('door-1', 'door-100');
+      removeClass('door-2', 'door-100');
+    }
+
+    clear();
+    automatic = false;
+
   };
 
   //shows the about container
