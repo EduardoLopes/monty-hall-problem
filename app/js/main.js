@@ -43,8 +43,6 @@
   var firstChosenDoor,
     //the second chosen door
     secondChosenDoor,
-    //have a random door sequence
-    doors,
     //the last chosen door
     choice,
     //door open after the first was choose
@@ -227,6 +225,39 @@
       }
     };
 
+  var Doors = {
+    quantity: 0,
+    doors: [],
+    withCar: 0,
+    numbersIds: [],
+    setQuantity: function(quantity) {
+      this.quantity = quantity;
+    },
+    generate: function(quantity) {
+      var i, randomNumber = Math.round(random(0, quantity - 1));
+
+      this.doors = [];
+      this.numbersIds = [];
+
+      for ( i = 0; i < quantity; i++ ) {
+        this.numbersIds.push(i);
+        if( i === randomNumber ){
+          this.doors.push( 'car' );
+          this.withCar = i;
+        } else {
+          this.doors.push( 'zonk' );
+        }
+
+        addDoor(i);
+
+      }
+
+      this.setQuantity(this.doors.length);
+    }
+  };
+
+  /****************************************************/
+
   /**
   * The id number of each door it's one number smaller, like: door 'door-0' means 'door-1'.
   * What this function makes it's extract the number of the id (door-0 or door-1) and increment +1
@@ -236,37 +267,6 @@
     if(door){
       return (+/door-(\d*)/g.exec(door)[1] + 1);
     }
-  }
-
-  //random generate the sequence of the doors
-  function generateDoors() {
-    //doors
-    var d = [], i;
-    //if one hundred mode is true
-    doorNumbers = [];
-
-    if(oneHundredMode){
-      //add car to the array
-      d.push('car');
-      doorNumbers.push(99);
-      //add 99 zonks to the array
-      for (i = 98; i >= 0; i--) {
-        d.push('zonk');
-        doorNumbers.push(i);
-      };
-    } else {
-      //three door
-      d = [ 'car', 'zonk', 'zonk' ];
-      doorNumbers = [0,1,2];
-    }
-    //random mix
-    doors = d.sort(function() {
-      return Math.round( random(-1, 2) );
-    });
-
-    for (i = 0; i < doors.length; i++) {
-      addDoor(i);
-    };
   }
 
   function addDoor(number){
@@ -298,7 +298,11 @@
   }
 
   //generate door sequence
-  generateDoors();
+  if(oneHundredMode){
+    Doors.generate(100);
+  } else {
+    Doors.generate(3);
+  }
 
   //change the class of the chosen door
   function chooseDoor( id ) {
@@ -317,12 +321,12 @@
       i,
       //doorNumber
       dn,
-      arrayWithoutCar = [];
+      arrayWithoutFirstChosen = [];
     //active the 'load' bar
     addClass('bar', 'active-bar');
     //look for doors with zonks
-    for ( i = 0; i < doors.length; i++ ) {
-      if(doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
+    for ( i = 0; i < Doors.doors.length; i++ ) {
+      if(Doors.doors[i] === 'zonk' && firstChosenDoor !== 'door-'+i){
         canOpen.push(i);
       }
     }
@@ -330,31 +334,31 @@
     //wait one second to open the door with a zonk
     setTimeout(function () {
       if(oneHundredMode){
-        arrayWithoutCar = doorNumbers.filter(function(element) {
-          return !(element === ( extractDoorNumber( firstChosenDoor ) - 1) );
+        console.log(Doors.numberIds);
+        arrayWithoutFirstChosen = Doors.numbersIds.filter(function(element) {
+          return element !== ( extractDoorNumber( firstChosenDoor ) - 1 );
         });
 
-        dn = randomChoice(arrayWithoutCar);
+        dn = randomChoice(arrayWithoutFirstChosen);
         //door that stay closed
         firstOpened = 'door-'+ dn;
 
-
-        if(doors[dn] === 'car'){
+        if(Doors.doors[dn] === 'car'){
           lastDoor = 'door-'+dn;
-          for ( i = 0; i < arrayWithoutCar.length; i++ ) {
-            if(arrayWithoutCar[i] !== dn){
-              addClass('door-'+arrayWithoutCar[i], 'door-zonk');
-              changeText('door-'+arrayWithoutCar[i], 'zonk');
+          for ( i = 0; i < arrayWithoutFirstChosen.length; i++ ) {
+            if(arrayWithoutFirstChosen[i] !== dn){
+              addClass('door-'+arrayWithoutFirstChosen[i], 'door-zonk');
+              changeText('door-'+arrayWithoutFirstChosen[i], 'zonk');
             } else {
               lastDoor = 'door-'+i;
             }
           }
         } else {
-          lastDoor = 'door-'+doors.indexOf('car');
-          for ( i = 0; i < arrayWithoutCar.length; i++ ) {
-            if(arrayWithoutCar[i] !== doors.indexOf('car')){
-              addClass('door-'+arrayWithoutCar[i], 'door-zonk');
-              changeText('door-'+arrayWithoutCar[i], 'zonk');
+          lastDoor = 'door-'+Doors.withCar;
+          for ( i = 0; i < arrayWithoutFirstChosen.length; i++ ) {
+            if(arrayWithoutFirstChosen[i] !== Doors.withCar){
+              addClass('door-'+arrayWithoutFirstChosen[i], 'door-zonk');
+              changeText('door-'+arrayWithoutFirstChosen[i], 'zonk');
             }
           }
         }
@@ -393,21 +397,21 @@
     addLogMessage( logMessages.allDoorsOpen() );
 
     //pass throng all dorrs
-    for ( i = 0; i < doors.length; i++ ) {
+    for ( i = 0; i < Doors.doors.length; i++ ) {
       //if choose a door with a car
-      if( doors[ i ] === 'car' && choice === 'door-' + i ){
+      if( Doors.doors[ i ] === 'car' && choice === 'door-' + i ){
         addClass( 'door-' + i , 'door-car' );
         changeText('door-' + i, 'CAR');
         addLogMessage( logMessages.win() );
         results.setWin();
       //if choose a door with a zonk show the door with a car
-      } else if( doors[ i ] === 'car' && choice !== 'door-' + i ) {
+      } else if( Doors.doors[ i ] === 'car' && choice !== 'door-' + i ) {
         addClass( 'door-' + i , 'door-car-was' );
         changeText('door-' + i, 'CAR');
         addLogMessage( logMessages.lose( i + 1 ) );
         results.setLose();
       //if choose a dor with a zonk shows this door paint of red
-      } else if( doors[ i ] !== 'car' && choice === 'door-' + i ) {
+      } else if( Doors.doors[ i ] !== 'car' && choice === 'door-' + i ) {
         addClass( 'door-'+i, 'door-wrong');
         changeText('door-' + i, 'zonk');
       //show the others doors with a zonk
@@ -431,7 +435,6 @@
 
   //set the second chosen door
   function setSecondChosenDoor(door){
-    console.log(door);
     secondChosenDoor = door;
     addLogMessage( logMessages.chooseSecondDoor() );
     chooseDoor( secondChosenDoor );
@@ -476,10 +479,9 @@
     * - if the clicked door it's different form the first open with a zonk
     * - if all door are not alrady open
     **/
-    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && ( /door-\d*/g.test( firstOpened ) ) && doors[ extractDoorNumber(clickedDoor) - 1] !== 'zonk' &&  !allDoorsOpen){
+    } else if ( !secondChosenDoor && clickedDoor !== firstChosenDoor && ( /door-\d*/g.test( firstOpened ) ) && !getElementById(clickedDoor).classList.contains('door-zonk') && !allDoorsOpen){
       setSecondChosenDoor( clickedDoor );
     }
-
   };
 
   //clear vars and etc
@@ -496,12 +498,16 @@
       getElementById('doors-container').removeChild(getElementById('doors-container').lastChild);
     }
     //generate another door sequence
-    generateDoors();
+    if(oneHundredMode){
+      Doors.generate(100);
+    } else {
+      Doors.generate(3);
+    }
     //remove log messages
     removeLogMessages();
 
     //remove all classes from the doors
-    for ( i = 0; i < doors.length; i++ ) {
+    for ( i = 0; i < Doors.doors.length; i++ ) {
       getElementById('door-' + i).classList.remove('door-chosen', 'door-zonk', 'door-car', 'door-wrong', 'door-car-was');
       changeText('door-' + i, (i + 1));
     }
@@ -529,7 +535,6 @@
 
   //button Automatic click event
   getElementById( 'auto' ).onclick = function() {
-    var second;
     //work as a interrupter
     automatic = !automatic;
     //if automatic is on
@@ -568,8 +573,7 @@
 
       //if the first door was not chosen yet
       if( !firstChosenDoor ){
-
-        setFirstChosenDoor( 'door-' + randomChoice( doorNumbers ) );
+        setFirstChosenDoor( 'door-' + randomChoice( Doors.numbersIds ) );
 
       /**
       * This check a lot of things:
@@ -587,7 +591,7 @@
           return false;
         }
 
-        setSecondChosenDoor( 'door-'+ doorNumbers.filter(function(element) {
+        setSecondChosenDoor( 'door-'+ Doors.numbersIds.filter(function(element) {
           //remove the already chosen doors form the array
 
           return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
