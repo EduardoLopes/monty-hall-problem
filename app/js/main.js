@@ -59,8 +59,6 @@
     alternateMode = true,
     //Turn on the one hundred doors mode
     oneHundredMode = false,
-    //is set to true when about 'button' is pressed
-    doorNumbers = [],
     //when true show about container
     showAbout = false,
     //used for one hundred doors mode, it's the last door to pick
@@ -182,7 +180,7 @@
         if(oneHundredMode){
           door = lastDoor;
         } else {
-          door = 'door-'+doorNumbers.filter(function(element) {
+          door = 'door-'+Doors.numbersIds.filter(function(element) {
 
             return !( element === ( extractDoorNumber( firstOpened ) - 1) || element === ( extractDoorNumber( firstChosenDoor ) - 1) );
 
@@ -225,35 +223,35 @@
       }
     },
     Doors = {
-    quantity: 0,
-    doors: [],
-    withCar: 0,
-    numbersIds: [],
-    setQuantity: function(quantity) {
-      this.quantity = quantity;
-    },
-    generate: function(quantity) {
-      var i, randomNumber = Math.round(random(0, quantity - 1));
+      quantity: 0,
+      doors: [],
+      withCar: 0,
+      numbersIds: [],
+      setQuantity: function(quantity) {
+        this.quantity = quantity;
+      },
+      generate: function(quantity) {
+        var i, randomNumber = Math.round(random(0, quantity - 1));
 
-      this.doors = [];
-      this.numbersIds = [];
+        this.doors = [];
+        this.numbersIds = [];
 
-      for ( i = 0; i < quantity; i++ ) {
-        this.numbersIds.push(i);
-        if( i === randomNumber ){
-          this.doors.push( 'car' );
-          this.withCar = i;
-        } else {
-          this.doors.push( 'zonk' );
+        for ( i = 0; i < quantity; i++ ) {
+          this.numbersIds.push(i);
+          if( i === randomNumber ){
+            this.doors.push( 'car' );
+            this.withCar = i;
+          } else {
+            this.doors.push( 'zonk' );
+          }
+
+          addDoor(i);
+
         }
 
-        addDoor(i);
-
+        this.setQuantity(this.doors.length);
       }
-
-      this.setQuantity(this.doors.length);
-    }
-  };
+    };
 
   /**
   * The id number of each door it's one number smaller, like: door 'door-0' means 'door-1'.
