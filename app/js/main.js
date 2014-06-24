@@ -223,9 +223,8 @@
         }
         return 'All doors open!';
       }
-    };
-
-  var Doors = {
+    },
+    Doors = {
     quantity: 0,
     doors: [],
     withCar: 0,
@@ -256,8 +255,6 @@
     }
   };
 
-  /****************************************************/
-
   /**
   * The id number of each door it's one number smaller, like: door 'door-0' means 'door-1'.
   * What this function makes it's extract the number of the id (door-0 or door-1) and increment +1
@@ -269,30 +266,35 @@
     }
   }
 
+  //add door to the DOM
   function addDoor(number){
     var newDoor,
         doorContainer = document.createElement('div');
 
+    //cache elements
     if(!elements['door-'+number]){
       newDoor = document.createElement('div');
       newDoor.classList.add('door', 'door-'+number);
       newDoor.setAttribute('id', 'door-'+number);
       elements['door-'+number] = newDoor;
     }
-
+    //get the cached element
     newDoor = elements['door-'+number];
 
+    //if one hundred mode is on add this classes
     if(oneHundredMode){
       doorContainer.classList.add('col-xs-2', 'col-md-1');
       newDoor.classList.add('door-100', 'door-'+number);
+      //if no
     } else {
       doorContainer.classList.add('col-xs-4', 'col-md-4');
       newDoor.classList.add('door-'+number);
       newDoor.appendChild( document.createTextNode( number + 1 ) );
     }
 
+    //each door is inside a div
     doorContainer.appendChild(newDoor);
-    //newLi.appendChild(text);
+    //all doors are inside another div called #doors-container
     getElementById('doors-container').appendChild(doorContainer);
 
   }
@@ -334,7 +336,6 @@
     //wait one second to open the door with a zonk
     setTimeout(function () {
       if(oneHundredMode){
-        console.log(Doors.numberIds);
         arrayWithoutFirstChosen = Doors.numbersIds.filter(function(element) {
           return element !== ( extractDoorNumber( firstChosenDoor ) - 1 );
         });
@@ -343,8 +344,10 @@
         //door that stay closed
         firstOpened = 'door-'+ dn;
 
+        //if the randomly chosen door have a car
         if(Doors.doors[dn] === 'car'){
           lastDoor = 'door-'+dn;
+          //close all doors but not the random one and the first chosen by the player
           for ( i = 0; i < arrayWithoutFirstChosen.length; i++ ) {
             if(arrayWithoutFirstChosen[i] !== dn){
               addClass('door-'+arrayWithoutFirstChosen[i], 'door-zonk');
@@ -353,8 +356,10 @@
               lastDoor = 'door-'+i;
             }
           }
+        //if the fist chosen don't have a car
         } else {
           lastDoor = 'door-'+Doors.withCar;
+          //close all doors but not the door with a car and the first chosen by the player
           for ( i = 0; i < arrayWithoutFirstChosen.length; i++ ) {
             if(arrayWithoutFirstChosen[i] !== Doors.withCar){
               addClass('door-'+arrayWithoutFirstChosen[i], 'door-zonk');
@@ -363,7 +368,9 @@
           }
         }
 
+        //add log mensage to the log
         addLogMessage(logMessages.askForChangeDoor());
+        //hide load bar
         removeClass('bar', 'active-bar');
 
         return false;
@@ -494,9 +501,11 @@
     firstOpened = null;
     allDoorsOpen = false;
 
+    //
     while (getElementById('doors-container').lastChild) {
       getElementById('doors-container').removeChild(getElementById('doors-container').lastChild);
     }
+
     //generate another door sequence
     if(oneHundredMode){
       Doors.generate(100);
@@ -610,23 +619,25 @@
 
   getElementById('one-hundred').onclick = function(e) {
 
+    //work as a interrupter
     oneHundredMode = !oneHundredMode;
-    automatic = false;
 
+    //Change button text
     if(oneHundredMode){
       if(pt_br){
-        getElementById( 'one-hundred' ).innerHTML = '3 portas';
+        getElementById( 'one-hundred' ).innerHTML = '3 Portas';
       } else {
-        getElementById( 'one-hundred' ).innerHTML = '3 doors';
+        getElementById( 'one-hundred' ).innerHTML = '3 Doors';
       }
 
     }
 
+    //Change button text and remove classe .door-100 when back to the 3 doors mode
     if(!oneHundredMode){
       if(pt_br){
-        getElementById( 'one-hundred' ).innerHTML = '100 portas';
+        getElementById( 'one-hundred' ).innerHTML = '100 Portas';
       } else {
-        getElementById( 'one-hundred' ).innerHTML = '100 doors';
+        getElementById( 'one-hundred' ).innerHTML = '100 Doors';
       }
       removeClass('door-0', 'door-100');
       removeClass('door-1', 'door-100');
@@ -634,13 +645,15 @@
     }
 
     clear();
+
+    //set automatic to false when change the mode
     automatic = false;
 
   };
 
   //shows the about container
-  getElementById('about').onclick = function() {
-
+  getElementById('about').onclick = function(e) {
+    e.preventDefault();
     //work as a interrupter
     showAbout = !showAbout;
 
