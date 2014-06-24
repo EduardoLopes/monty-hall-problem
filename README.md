@@ -4,10 +4,16 @@ Simulation of the monty hall problem.
 
 http://eduardolopes.github.io/monty-hall-problem/
 
-Dev
----
+## Dev
+
+
 
 install [grunt](http://gruntjs.com/getting-started) `npm install -g grunt-cli`
+
+`npm install` to install all nodejs modules
+
+### Grunt tasks
+
 
 `grunt server` to run a server (localhost:9000)
 
@@ -32,5 +38,3 @@ dist
 │   └── index.html
 └── robots.txt
 ```
-
-
