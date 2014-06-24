@@ -223,13 +223,19 @@
       }
     },
     Doors = {
+      //quantity of doors
       quantity: 0,
+      //doors
       doors: [],
+      //index of the doors with a carr
       withCar: 0,
+      //number id of all door
       numbersIds: [],
+      //set quantity of doors
       setQuantity: function(quantity) {
         this.quantity = quantity;
       },
+      //generate doors
       generate: function(quantity) {
         var i, randomNumber = Math.round(random(0, quantity - 1));
 
@@ -244,7 +250,7 @@
           } else {
             this.doors.push( 'zonk' );
           }
-
+          //add doors to the dom
           addDoor(i);
 
         }
@@ -260,7 +266,7 @@
   */
   function extractDoorNumber(door){
     if(door){
-      return (+/door-(\d*)/g.exec(door)[1] + 1);
+      return +(/door-(\d*)/.exec(door)[1]) + 1;
     }
   }
 
@@ -365,11 +371,11 @@
             }
           }
         }
+        //hide load bar
+        removeClass('bar', 'active-bar');
 
         //add log mensage to the log
         addLogMessage(logMessages.askForChangeDoor());
-        //hide load bar
-        removeClass('bar', 'active-bar');
 
         return false;
       }
